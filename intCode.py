@@ -13,13 +13,24 @@ class intCodeMachine:
         self.inputs = []
         self.outputs = []
         self.waitingForInput = False
+        self.relative_base = 0
+
+    def __get_op(self, opno, mode):
+        if mode == 0:   # position mode
+            return self.mem_get(self.mem_get(self.pos+opno))
+        elif mode == 1: # absolute mode
+            return self.mem_get(self.pos + opno)
+        elif mode == 2: # relative mode
+            return self.mem_get(self.mem_get(self.pos+opno) + self.relative_base)
+        else:
+            self.memory[len(self.memory) + 1]
 
     # Get 'num' parameters give the parameters modes
     def __get_ops(self, num, modes):
         (a_mode, b_mode, c_mode) = modes
-        a = (self.memory[self.pos+1] if a_mode == 1 else self.memory[self.memory[self.pos+1]]) if num >= 1 else None
-        b = (self.memory[self.pos+2] if b_mode == 1 else self.memory[self.memory[self.pos+2]]) if num >= 2 else None
-        c = (self.memory[self.pos+3] if c_mode == 1 else self.memory[self.memory[self.pos+3]]) if num >= 3 else None
+        a = self.__get_op(1, a_mode) if num >= 1 else None
+        b = self.__get_op(2, b_mode) if num >= 2 else None
+        c = self.__get_op(3, c_mode) if num >= 3 else None
         return (a, b, c)
 
     def expand_memory(self, size):
@@ -31,7 +42,7 @@ class intCodeMachine:
         return self.memory[position]
 
     def mem_set(self, position, value):
-        if position > len(self.memory): self.expand_memory(position+1)
+        if position >= len(self.memory): self.expand_memory(position+1)
         self.memory[position] = value
         
     # Begin/Continue Running the machine
@@ -43,7 +54,7 @@ class intCodeMachine:
             (a_mode, b_mode, c_mode) = get_modes(self.mem_get(self.pos))
             modes = (a_mode, b_mode, 1)
 
-            if opcode not in range(1,8+1):
+            if opcode not in range(1, 9+1):
                 print("ERROR: unsupported opcode: " + str(opcode))
                 break
 
@@ -90,5 +101,10 @@ class intCodeMachine:
                 self.mem_set(c, 1 if a == b else 0)
                 self.pos += 4
                 if debug: print("eq", a, "==", b, "into", c)
+            elif (opcode == 9):
+                (a, _, _) = self.__get_ops(1, modes)
+                self.relative_base += a
+                self.pos += 2
+                if debug: print("rb adjust by", a)
 
         return True
