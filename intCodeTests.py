@@ -10,13 +10,13 @@ def main():
     print_result("test_opcodes_5_6_7_8:", test_opcodes_5_6_7_8())
     print_result("test_day5_diagnostic_a:", test_day5_diagnostic_a())
     print_result("test_day5_diagnostic_b:", test_day5_diagnostic_b())
+    print_result("test_opcode_9_and_large_mem:", test_opcode_9_and_large_mem())
+    print_result("test_large_number", test_large_number())
     print()
 
 def print_result(name, result):
     passed, total = result
-    print('{:>25}  {:>2} / {:>2} Passed'.format(name, passed, total))
-
-
+    print('{:>30}  {:>2} / {:>2} Passed'.format(name, passed, total))
 
 def final_memory_match(program, final_memory):
     machine = intCode.intCodeMachine(program)
@@ -36,7 +36,7 @@ def test_opcodes_1_2():
                       ([2,4,4,5,99,0],[2,4,4,5,99,9801]),
                       ([1,1,1,4,99,5,6,0,99],[30,1,1,4,2,5,6,0,99])]
     return compare_memories(program_states)
-
+    
 def input_output_match(program, inputs, expected_outputs):
     machine = intCode.intCodeMachine(program)
     machine.inputs = inputs
@@ -118,11 +118,11 @@ def test_day5_diagnostic_a():
     program = list(int(x) for x in program)
     machine = intCode.intCodeMachine(program)
     machine.inputs = [1]
-    if (not machine.run()): return "Error"
     passed = 0
-    for o in machine.outputs[:-1]:
-        if (o == 0): passed += 1
-    if (machine.outputs[-1] == 15259545): passed += 1
+    if machine.run():
+        for o in machine.outputs[:-1]:
+            if (o == 0): passed += 1
+        if (machine.outputs[-1] == 15259545): passed += 1
     return passed, len(machine.outputs)
 
 def test_day5_diagnostic_b():
@@ -131,7 +131,26 @@ def test_day5_diagnostic_b():
     program = list(int(x) for x in program)
     machine = intCode.intCodeMachine(program)
     machine.inputs = [5]
+    passed = 0
+    if machine.run():
+        passed = int(machine.outputs[-1] == 7616021)
+    return passed, 1
+
+def test_opcode_9_and_large_mem():
+    quine = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+    machine = intCode.intCodeMachine(quine)
     if (not machine.run()): return "Error"
-    return int(machine.outputs[-1] == 7616021), 1
+    return int(machine.outputs == quine), 1
+
+def test_large_number():
+    program = [1102,34915192,34915192,7,4,7,99,0]
+    machine = intCode.intCodeMachine(program)
+    if (machine.run() and len(machine.outputs) == 1):
+        passed = int(len(str(machine.outputs[0])) == 16)
+    program = [104,1125899906842624,99]
+    machine = intCode.intCodeMachine(program)
+    if (machine.run() and len(machine.outputs) == 1):
+        passed += int(machine.outputs[0] == 1125899906842624)
+    return passed, 2
     
 main()
