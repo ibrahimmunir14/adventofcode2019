@@ -1,4 +1,5 @@
-import org.junit.Assert;
+package intCode;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -6,6 +7,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class intCodeMachineTests {
+
+  @Test
+  public void getModesTest() {
+    assert(Arrays.equals(intCodeMachine.getModes(   11), new int[]{0, 0, 0}));
+    assert(Arrays.equals(intCodeMachine.getModes(  100), new int[]{1, 0, 0}));
+    assert(Arrays.equals(intCodeMachine.getModes( 1000), new int[]{0, 1, 0}));
+    assert(Arrays.equals(intCodeMachine.getModes(10000), new int[]{0, 0, 1}));
+    assert(Arrays.equals(intCodeMachine.getModes(10134), new int[]{1, 0, 1}));
+    assert(Arrays.equals(intCodeMachine.getModes(20100), new int[]{1, 0, 2}));
+    assert(Arrays.equals(intCodeMachine.getModes( 2233), new int[]{2, 2, 0}));
+    assert(Arrays.equals(intCodeMachine.getModes(32145), new int[]{1, 2, 3}));
+  }
 
   private boolean finalMemoryMatch(long[] program, long[] expectedMemory) {
     intCodeMachine machine = new intCodeMachine(program);
