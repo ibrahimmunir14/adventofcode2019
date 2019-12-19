@@ -11,27 +11,26 @@ public class Day5 {
 
     /* Part 1 */
     System.out.println("Part 1:");
-    List<Long> outputs = runDiagnostics(program, 1);
-    System.out.print("Outputs: ");
-    for (Long e : outputs) System.out.print(e + " ");
-    System.out.println();
+    Long output = runDiagnostics(program, 1);
+    System.out.print("Diagnostic Code: " + output.toString());
     System.out.println();
 
     /* Part 2 */
     System.out.println("Part 2:");
-    outputs = runDiagnostics(program, 5);
-    System.out.print("Outputs: ");
-    for (Long e : outputs) System.out.print(e + " ");
-    System.out.println();
+    output = runDiagnostics(program, 5);
+    System.out.print("Diagnostic Code: " + output.toString());
     System.out.println();
   }
 
-  private static List<Long> runDiagnostics(long[] program, long input) {
+  private static Long runDiagnostics(long[] program, long input) {
     intCodeMachine machine = new intCodeMachine(program);
     machine.addInputs(List.of(input));
     boolean halted = machine.run();
     assert(halted);
-    return machine.getOutputs();
+    while (machine.outputSize() > 1) {
+      machine.popOutput();
+    }
+    return machine.popOutput();
   }
 
 

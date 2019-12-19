@@ -30,7 +30,11 @@ public class intCodeMachineTests {
     intCodeMachine machine = new intCodeMachine(program);
     machine.addInputs(inputs);
     if (!machine.run(true)) { return false; }
-    return machine.getOutputs().equals(expectedOutputs);
+    for (Long o : expectedOutputs) {
+      if (!o.equals(machine.popOutput())) return false;
+    }
+    return true;
+    //return machine.getOutputs().equals(expectedOutputs);
   }
 
   /* Test that opCode 1 (Add) and 2 (Multiply) work as expected */
@@ -159,14 +163,14 @@ public class intCodeMachineTests {
     long[] programProduce16DigitNumber = new long[]{1102, 34915192, 34915192, 7, 4, 7, 99, 0};
     intCodeMachine machine = new intCodeMachine(programProduce16DigitNumber);
     assert(machine.run(true));
-    assert(machine.getOutputs().size() == 1);
-    assert(machine.getOutputs().get(0).toString().length() == 16);
+    assert(machine.outputSize() == 1);
+    assert(((Long) machine.popOutput()).toString().length() == 16);
 
     long[] programOutputLargeNumber= new long[]{104,1125899906842624L,99};
     machine = new intCodeMachine(programOutputLargeNumber);
     assert(machine.run(true));
-    assert(machine.getOutputs().size() == 1);
-    assert(machine.getOutputs().get(0) == 1125899906842624L);
+    assert(machine.outputSize() == 1);
+    assert(machine.popOutput() == 1125899906842624L);
   }
 
   /* Test that opCode 9 (Modify Relative Base) works as expected

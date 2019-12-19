@@ -60,7 +60,7 @@ public class Day7 {
       machine.addInputs(List.of(output));
       halted = machine.run();
       assert(halted != machine.isWaitingForInput());
-      output = machine.getOutputs().remove(0);
+      output = machine.popOutput();
       amp = (amp + 1) % numMachines;
     }
     return output;

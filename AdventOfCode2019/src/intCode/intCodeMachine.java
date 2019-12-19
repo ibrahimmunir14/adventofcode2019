@@ -131,10 +131,6 @@ public class intCodeMachine {
     }
   }
 
-  public ArrayList<Long> getMemory() {
-    return memory;
-  }
-
   public long[] getMemoryArray() {
     long[] mem = new long[memory.size()];
     for (int i = 0; i < memory.size(); i++) {
@@ -147,9 +143,15 @@ public class intCodeMachine {
     this.inputs.addAll(inputs);
   }
 
-  public List<Long> getOutputs() {
-    return outputs;
+  public void addInput(Long input) {
+    this.inputs.add(input);
   }
+
+  public long popOutput() {
+    return outputs.remove(0);
+  }
+
+  public int outputSize() { return outputs.size(); }
 
   public boolean isWaitingForInput() {
     return waitingForInput;

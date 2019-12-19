@@ -26,7 +26,7 @@ public class Day2 {
     intCodeMachine machine = new intCodeMachine(program);
     boolean halted = machine.run();
     assert(halted);
-    return machine.getMemory().get(0);
+    return machine.getMemoryArray()[0];
   }
 
   private static NounVerb findNounVerb(long[] program, long output) {
