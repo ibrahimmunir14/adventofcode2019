@@ -150,4 +150,8 @@ public class intCodeMachine {
   public List<Long> getOutputs() {
     return outputs;
   }
+
+  public boolean isWaitingForInput() {
+    return waitingForInput;
+  }
 }
