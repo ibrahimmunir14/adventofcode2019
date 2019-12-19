@@ -1,14 +1,13 @@
 package intCode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class intCodeMachine {
   private final int size;
   private final ArrayList<Long> memory = new ArrayList<>();
   private int pos = 0;
-  private final ArrayList<Long> inputs = new ArrayList<>();
-  private final ArrayList<Long> outputs = new ArrayList<>();
+  private final ArrayDeque<Long> inputs = new ArrayDeque<>();
+  private final ArrayDeque<Long> outputs = new ArrayDeque<>();
   private boolean waitingForInput = false;
   private int relativeBase = 0;
 
@@ -55,7 +54,7 @@ public class intCodeMachine {
           waitingForInput = true;
           return false;
         }
-        memSet(a, inputs.remove(0));
+        memSet(a, inputs.poll());
         pos += 2;
         if (debug) System.out.println("input into " + a);
       } else if (opCode == 4) { // output
@@ -148,7 +147,7 @@ public class intCodeMachine {
   }
 
   public long popOutput() {
-    return outputs.remove(0);
+    return outputs.poll();
   }
 
   public int outputSize() { return outputs.size(); }
